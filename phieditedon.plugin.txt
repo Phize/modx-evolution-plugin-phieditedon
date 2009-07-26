@@ -1,0 +1,80 @@
+/*==============================================================================
+  Title: phiEditedon
+  Category: Plugin
+  Author: Phize
+  Author URI: http://phize.net
+  License: GNU General Public License(http://www.gnu.org/licenses/gpl.html)
+  Version: 1.0.0
+  Last Update: 2007-08-28T20:34:12+09:00
+==============================================================================*/
+
+
+
+
+
+include_once($modx->config['base_path'] . 'assets/plugins/phieditedon/phieditedon.inc.php');
+
+// Global variable's name for preserving 'editedon' value
+$globalVarName = 'modx_plugin_phiEditedon_editedon';
+
+$e = &$modx->event;
+
+switch ($e->name) {
+    /*******************************************************************************/
+    // On BeforeDocFormSave event
+    case "OnBeforeDocFormSave":
+        $id = $e->params['id'];
+        $table = $modx->getFullTableName('site_content');
+        $query = $modx->db->query("SELECT editedon FROM " . $table . " WHERE id = '" . $id . "'");
+        $result = $modx->db->getRow($query);
+        $editedon = $result['editedon'];
+
+        // Preserve 'editedon' value
+        if ($editedon) {
+            $GLOBALS[$globalVarName] = $editedon;
+        }
+        break;
+    /*******************************************************************************/
+
+    /*******************************************************************************/
+    // OnDocFormSave event
+    case "OnDocFormSave":
+        $id = $e->params['id'];
+        $table = $modx->getFullTableName('site_content');
+        $query = $modx->db->query("SELECT published, deleted FROM " . $table . " WHERE id = '" . $id . "'");
+        $result = $modx->db->getRow($query);
+        $published = $result['published'];
+        $deleted = $result['deleted'];
+
+        // Get template variables
+        $pe_update = modx_plugin_phiEditedon_getTemplateVar($modx, $updateTV, $id, $published, $deleted);
+        $pe_editedon = modx_plugin_phiEditedon_getTemplateVar($modx, $editedonTV, $id, $published, $deleted);
+
+        // Rewrite 'editedon' value
+        if ($pe_update && $pe_editedon) {
+            switch ($pe_update['value']) {
+                case 0:  // Manual mode
+                    if (!empty($pe_editedon['value']) && preg_match('/^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})$/', $pe_editedon['value'], $matches)) {
+                        $editedon = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+                        $modx->db->update("editedon = " . $editedon, $table, "id = '" . $id . "'");
+                    }
+                    break;
+                case 1:  // Disable mode
+                    if (isset($GLOBALS[$globalVarName]) && preg_match('/^\d+$/', $GLOBALS[$globalVarName])) {
+                        $editedon = $GLOBALS[$globalVarName];
+                        $modx->db->update("editedon = " . $editedon, $table, "id = '" . $id . "'");
+                    }
+                    break;
+            }
+
+            // Reset template variables
+            $table = $modx->getFullTableName('site_tmplvar_contentvalues');
+            $modx->db->delete($table, "tmplvarid = '" . $pe_update['id'] . "' AND contentid = '" . $id . "'");
+            $modx->db->delete($table, "tmplvarid = '" . $pe_editedon['id'] . "' AND contentid = '" . $id . "'");
+        }
+
+        // Unset global variable
+        unset($GLOBALS[$globalVarName]);
+        break;
+    /*******************************************************************************/
+}
