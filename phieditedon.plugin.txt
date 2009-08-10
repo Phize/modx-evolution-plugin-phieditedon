@@ -52,7 +52,9 @@ switch ($e->name) {
         // Rewrite 'editedon' value
         if ($pe_update && $pe_editedon) {
 
+            // Support datetime_format
             $datetime_format = $modx->getConfig('datetime_format');
+            $datetime_format = $datetime_format ? $datetime_format : 'dd-mm-YYYY';
             $datetime_format = str_replace(
                                    array('dd-mm-YYYY', 'mm/dd/YYYY', 'YYYY/mm/dd'),
                                    array('(?<day>\d{1,2})-(?<month>\d{1,2})-(?<year>\d{4})', '(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})', '(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2})'),
