@@ -1,12 +1,11 @@
-/*==============================================================================
-  Title: phiEditedon
-  Category: Plugin
-  Author: Phize
-  Author URI: http://phize.net
-  License: GNU General Public License(http://www.gnu.org/licenses/gpl.html)
-  Version: 1.0.0
-  Last Update: 2007-08-28T20:34:12+09:00
-==============================================================================*/
+/* Title      : phiEditedon plugin
+ * Category   : Plugin
+ * Author     : Phize
+ * Author URI : http://phize.net
+ * License    : GNU General Public License(http://www.gnu.org/licenses/gpl.html)
+ * Version    : 1.1.0
+ * Last Update: 2009-08-11
+ */
 
 
 
@@ -22,7 +21,7 @@ $e = &$modx->event;
 switch ($e->name) {
     /*******************************************************************************/
     // On BeforeDocFormSave event
-    case "OnBeforeDocFormSave":
+    case 'OnBeforeDocFormSave':
         $id = $e->params['id'];
         $table = $modx->getFullTableName('site_content');
         $query = $modx->db->query("SELECT editedon FROM " . $table . " WHERE id = '" . $id . "'");
@@ -38,7 +37,7 @@ switch ($e->name) {
 
     /*******************************************************************************/
     // OnDocFormSave event
-    case "OnDocFormSave":
+    case 'OnDocFormSave':
         $id = $e->params['id'];
         $table = $modx->getFullTableName('site_content');
         $query = $modx->db->query("SELECT published, deleted FROM " . $table . " WHERE id = '" . $id . "'");
@@ -52,10 +51,21 @@ switch ($e->name) {
 
         // Rewrite 'editedon' value
         if ($pe_update && $pe_editedon) {
+
+            $datetime_format = $modx->getConfig('datetime_format');
+            $datetime_format = str_replace(
+                                   array('dd-mm-YYYY', 'mm/dd/YYYY', 'YYYY/mm/dd'),
+                                   array('(?<day>\d{1,2})-(?<month>\d{1,2})-(?<year>\d{4})', '(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})', '(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2})'),
+                                   $datetime_format
+                               );
+
             switch ($pe_update['value']) {
                 case 0:  // Manual mode
-                    if (!empty($pe_editedon['value']) && preg_match('/^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})$/', $pe_editedon['value'], $matches)) {
-                        $editedon = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+                    if (!empty($pe_editedon['value']) && preg_match('!^' . $datetime_format . ' (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2})$!', $pe_editedon['value'], $matches)) {
+                        $editedon = mktime($matches['hour'], $matches['minute'], $matches['second'], $matches['month'], $matches['day'], $matches['year']);
+
+$modx->logEvent(1, 1, 'start');
+
                         $modx->db->update("editedon = " . $editedon, $table, "id = '" . $id . "'");
                     }
                     break;
