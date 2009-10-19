@@ -57,13 +57,13 @@ switch ($e->name) {
             $datetime_format = $datetime_format ? $datetime_format : 'dd-mm-YYYY';
             $datetime_format = str_replace(
                                    array('dd-mm-YYYY', 'mm/dd/YYYY', 'YYYY/mm/dd'),
-                                   array('(?<day>\d{1,2})-(?<month>\d{1,2})-(?<year>\d{4})', '(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})', '(?<year>\d{4})/(?<month>\d{1,2})/(?<day>\d{1,2})'),
+                                   array('(?P<day>\d{1,2})-(?P<month>\d{1,2})-(?P<year>\d{4})', '(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<year>\d{4})', '(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})'),
                                    $datetime_format
                                );
 
             switch ($pe_update['value']) {
                 case 0:  // Manual mode
-                    if (!empty($pe_editedon['value']) && preg_match('!^' . $datetime_format . ' (?<hour>\d{1,2}):(?<minute>\d{1,2}):(?<second>\d{1,2})$!', $pe_editedon['value'], $matches)) {
+                    if (!empty($pe_editedon['value']) && preg_match('!^' . $datetime_format . ' (?P<hour>\d{1,2}):(?P<minute>\d{1,2}):(?P<second>\d{1,2})$!', $pe_editedon['value'], $matches)) {
                         $editedon = mktime($matches['hour'], $matches['minute'], $matches['second'], $matches['month'], $matches['day'], $matches['year']);
 
 $modx->logEvent(1, 1, 'start');
