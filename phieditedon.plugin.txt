@@ -1,7 +1,7 @@
 /**
  * phiEditedon
  *
- * Change the way to update editedon datetime.
+ * Changes the way to update editedon datetime.
  *
  * @category	plugin
  * @version		1.1.2
