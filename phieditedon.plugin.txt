@@ -3,15 +3,15 @@
  *
  * Changes the way to update editedon datetime.
  *
- * @category	plugin
- * @version		1.1.2
- * @lastmodified $Date$
- * @license		http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
- * @author		Phize
- * @link		http://phize.net
- * @internal	@properties &updateTV=Update TV name;string;peUpdate&editedonTV=Editedon TV name;string;peEditedon;
- * @internal	@events OnBeforeDocFormSave,OnDocFormSave
- * @internal	@modx_category Manager and Admin
+ * @category		plugin
+ * @version			1.1.2
+ * @lastmodified	$Date$
+ * @license			http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+ * @author			Phize
+ * @link			http://phize.net
+ * @internal		@properties &updateTV=Update TV name;string;peUpdate&editedonTV=Editedon TV name;string;peEditedon;
+ * @internal		@events OnBeforeDocFormSave,OnDocFormSave
+ * @internal		@modx_category Manager and Admin
  */
 
 

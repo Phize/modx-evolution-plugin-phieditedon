@@ -1,13 +1,16 @@
 <?php
-/*==============================================================================
-  Title: phiEditedon
-  Category: Plugin
-  Author: Phize
-  Author URI: http://phize.net
-  License: GNU General Public License(http://www.gnu.org/licenses/gpl.html)
-  Version: 1.1.0
-  Last Update: 2009-08-11
-==============================================================================*/
+/**
+ * phiEditedon
+ *
+ * Changes the way to update editedon datetime.
+ *
+ * @category		plugin
+ * @version			1.1.2
+ * @lastmodified	$Date$
+ * @license			http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+ * @author			Phize
+ * @link			http://phize.net
+ */
 
 
 
